@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b8d9eb">
+  <title>Eve’s bizarre adventures</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="scene" id="scene">
+    <div class="scene-tint" aria-hidden="true"></div>
+
+    <button class="restart-story-button is-hidden" id="restartStoryButton" type="button" aria-label="Restart a new story">Restart a new story ↻</button>
+
+    <section class="welcome-screen" id="welcomeScreen" aria-labelledby="welcomeTitle">
+      <button class="start-button" id="startButton" type="button">Start your adventure</button>
+    </section>
+
+    <section class="story-screen is-hidden" id="storyScreen" aria-live="polite">
+      <div class="guide-area">
+        <button class="eevee-toggle" id="eeveeToggle" type="button" aria-label="Close Eevee's dialogue" title="Open or close the dialogue">
+          <img class="eevee-guide" id="eeveeGuide" src="assets/eevee-portrait.jpeg" alt="Eevee, your little guide">
+        </button>
+        <span class="guide-hint" id="guideHint">Click Eevee to hide the dialogue ♡</span>
+      </div>
+
+      <div class="dialogue-column">
+        <section class="dialogue-panel" id="dialoguePanel" aria-label="Eevee's message">
+          <p class="dialogue-text" id="dialogueText"></p>
+        </section>
+        <div class="choice-list" id="choiceList" aria-label="Your choices"></div>
+        <div class="name-entry" id="nameEntry"></div>
+        <div class="dialogue-actions">
+          <button class="back-button is-hidden" id="backButton" type="button">← Back</button>
+          <button class="continue-button" id="continueButton" type="button">Continue <span aria-hidden="true">→</span></button>
+          <button class="play-game-button is-hidden" id="playGameButton" type="button">Play Evee's game</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="scene-friends" id="sceneFriends" aria-label="Your animal friends"></div>
+    <div class="scene-items" id="sceneItems" aria-label="Your snack, Twilight Sparkle and summoned friend"></div>
+    <section class="game-overlay is-hidden" id="gameOverlay" role="dialog" aria-modal="true" aria-labelledby="gameTitle">
+      <div class="game-card">
+        <button class="game-close" id="gameClose" type="button" aria-label="Close game">×</button>
+        <p class="game-eyebrow">Gambling time!</p>
+        <h2 id="gameTitle">Evee's wishing game</h2>
+        <p id="gameIntro">Take a deep breath, make a little wish, and see who joins your adventure.</p>
+        <div class="summon-preview is-hidden" id="summonPreview">
+          <img id="summonPreviewImage" src="" alt="">
+          <p id="summonPreviewName"></p>
+        </div>
+        <button class="gamble-button" id="gambleButton" type="button">GAMBLE</button>
+      </div>
+    </section>
+    <section class="letter-overlay is-hidden" id="letterOverlay" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+      <article class="letter-card">
+        <button class="letter-close" id="letterClose" type="button" aria-label="Close the letter" title="Close letter">×</button>
+        <div class="letter-flower-wrap"><img class="letter-flower" src="assets/final-bouquet.png" alt="A bouquet of yellow flowers"></div>
+        <div class="letter-paper">
+          <h2 id="letterTitle">A little letter for you ♡</h2>
+          <p>I hope you enjoyed this little trip, I tried to make something fun to make you think of something else for a little moment. Thank you very much for being in my life, keep on mind that you are loved and that I am very proud of you, for every single small thing you achieve everyday!</p>
+          <p class="letter-signature">Romain</p>
+        </div>
+      </article>
+    </section>
+    <section class="karaoke-overlay is-hidden" id="karaokeOverlay" role="dialog" aria-modal="true" aria-labelledby="karaokeTitle">
+      <div class="karaoke-card">
+        <p class="karaoke-eyebrow">Pikachu's concert ♡</p>
+        <h2 id="karaokeTitle">Just write the lyrics here!</h2>
+        <p id="karaokeSongName" class="karaoke-song-name"></p>
+        <audio id="karaokeAudio" autoplay loop preload="auto"></audio>
+        <p id="karaokeAudioNote" class="karaoke-audio-note" aria-live="polite"></p>
+        <textarea id="karaokeLyrics" class="karaoke-lyrics" rows="7" aria-label="Write the lyrics here" placeholder="just write the lyrics here!"></textarea>
+        <button class="continue-button karaoke-skip" id="karaokeSkip" type="button">I'm done ♡</button>
+      </div>
+    </section>
+    <p class="footer-note" id="footerNote">made with a little bit of love ♡</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

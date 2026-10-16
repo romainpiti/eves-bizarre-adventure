@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
+
+:root { --ink:#34475c; --pink:#f6d7ed; --pink-deep:#bd82b2; --panel:rgba(255,250,246,.96); }
+* { box-sizing:border-box; }
+html,body { width:100%; min-height:100%; margin:0; }
+body { font-family:'Nunito','Quicksand',sans-serif; color:var(--ink); background:#b8d9eb; }
+button,input { font:inherit; }
+button { -webkit-tap-highlight-color:transparent; }
+.scene {
+  position:relative; isolation:isolate; min-height:100svh; width:100%; overflow:hidden;
+  display:grid; place-items:center; padding:clamp(16px,3vw,40px);
+  background-image:url("assets/background-pixel-art.jpeg"); background-size:cover; background-position:center; background-repeat:no-repeat;
+}
+.scene--room { background-image:url("assets/cozy-room.jpeg"); }
+.scene--lake { background-image:url("assets/halloween-lake.jpeg"); background-position:center; background-size:cover; }
+.scene--beach { background-image:url("assets/beach.jpeg"); }
+.scene--final { background-image:url("assets/final-room.jpeg"); background-position:center; }
+.scene-tint { position:absolute; inset:0; z-index:-1; background:rgba(255,248,250,.05); pointer-events:none; }
+.welcome-screen { position:absolute; inset:0; z-index:4; width:100%; min-height:100%; display:grid; place-items:center; padding:24px; animation:fade-in .7s ease both; background:url("assets/start-adventure-sky.jpg") center / cover no-repeat; }
+.welcome-card { display:none; }
+.eyebrow,h1,.welcome-subtitle { display:none; }
+.start-button,.continue-button,.back-button,.choice-button,.dialogue-close,.eevee-toggle { border:0; cursor:pointer; transition:transform .16s ease,filter .16s ease; }
+.start-button { justify-self:center; align-self:center; padding:15px 30px; border:1px solid rgba(255,255,255,.92); border-radius:999px; color:#4c536d; background:rgba(255,255,255,.82); font-weight:800; letter-spacing:.015em; box-shadow:0 4px 14px rgba(39,67,89,.12); backdrop-filter:blur(3px); font-size:clamp(1rem,2.3vw,1.15rem); }
+.start-button span { margin-left:7px; }
+.start-button:hover,.continue-button:hover,.choice-button:hover { transform:translateY(-2px); filter:brightness(1.03); }
+button:focus-visible,input:focus-visible { outline:3px solid #536d91; outline-offset:4px; }
+.is-hidden { display:none!important; }
+
+.story-screen { position:relative; z-index:5; width:min(100%,1000px); display:grid; grid-template-columns:minmax(150px,.65fr) minmax(300px,1.35fr); align-items:end; gap:clamp(14px,3vw,30px); animation:fade-in .55s ease both; }
+.guide-area { display:flex; flex-direction:column; justify-content:flex-end; align-items:center; min-height:270px; }
+.eevee-toggle { position:relative; z-index:8; display:flex; align-items:center; justify-content:center; padding:0; border:0; background:transparent; border-radius:18px; }
+.eevee-guide { display:block; width:min(100%,250px); max-height:340px; object-fit:contain; image-rendering:pixelated; border-radius:10px; filter:drop-shadow(0 5px 0 #314d5220); animation:pop-in .55s cubic-bezier(.2,.8,.2,1) both; }
+.guide-hint { margin-top:4px; font-size:.68rem; color:white; text-shadow:0 1px 4px #23394c; text-align:center; opacity:.9; }
+.dialogue-panel { position:relative; isolation:isolate; align-self:center; min-height:245px; padding:clamp(22px,3vw,34px) clamp(52px,7vw,82px) clamp(48px,5vw,62px); border:0; border-radius:0; background:transparent; filter:drop-shadow(0 8px 0 rgba(94,136,161,.12)); text-align:center; }
+.dialogue-panel::before { content:""; position:absolute; inset:0; z-index:-1; background:transparent url("assets/dialogue-bubble.png") center / 100% 100% no-repeat; pointer-events:none; }
+.dialogue-panel.speaker--twilight::before { transform:scaleX(-1); }
+.dialogue-text { position:relative; z-index:1; }
+.dialogue-close { position:absolute; top:24px; right:32px; width:26px; height:26px; display:grid; place-items:center; border-radius:50%; color:#9a8299; background:#eeeaff; font-size:1.2rem; line-height:1; }
+.dialogue-close:hover { transform:scale(1.08); }
+.dialogue-heading { display:flex; align-items:center; justify-content:center; gap:9px; padding:0 22px 9px; border-bottom:1px dashed #d9c8d9; }
+.dialogue-icon { display:grid; place-items:center; width:28px; height:28px; border-radius:8px; background:#f4d9ec; color:#9d6b9d; }
+.speaker-name { font-weight:800; color:#a86fa2; }
+.dialogue-label { margin-left:8px; color:#a69aa9; font-size:.62rem; letter-spacing:.1em; font-weight:800; }
+.dialogue-text { min-height:76px; margin:12px auto; max-width:52ch; font-size:clamp(1rem,2.2vw,1.12rem); line-height:1.5; white-space:pre-line; text-align:center; }
+.choice-list { display:grid; gap:8px; margin:12px 0 4px; }
+.choice-list:empty { display:none; }
+.choice-button { width:100%; text-align:center; padding:11px 14px; border:1px solid #e3d4e3; border-radius:11px; color:#53647a; background:rgba(255,255,255,.94); font-weight:700; }
+.choice-button[aria-pressed="true"] { background:#f6e4f1; border-color:#c889bb; box-shadow:inset 0 0 0 1px #c889bb; }
+.dialogue-actions { display:flex; justify-content:center; align-items:center; gap:10px; margin-top:12px; }
+.continue-button { margin-left:0; padding:10px 18px; border-radius:10px; color:white; background:#829fc0; font-weight:800; box-shadow:0 4px 0 #6583a5; }
+.continue-button:disabled { opacity:.5; cursor:default; transform:none; }
+.continue-button span { margin-left:8px; }
+.back-button { padding:9px 13px; border-radius:10px; color:#6c6d83; background:#eee8f1; font-weight:700; }
+
+.scene-friends { position:absolute; z-index:2; inset:0; pointer-events:none; overflow:hidden; }
+.friend { position:absolute; display:block; max-height:18vh; object-fit:contain; filter:drop-shadow(0 4px 0 #263c3b24); animation:friend-appear .65s cubic-bezier(.2,.8,.2,1) both; }
+.friend--cat { max-height:17vh; }
+.friend--bunny { max-height:13vh; }
+.footer-note { position:absolute; z-index:1; bottom:10px; left:0; width:100%; margin:0; text-align:center; color:rgba(48,79,102,.78); font-size:.72rem; letter-spacing:.05em; pointer-events:none; }
+.name-entry:empty { display:none; }
+.name-entry { display:grid; gap:9px; margin-top:12px; }
+.name-entry label { display:grid; gap:4px; font-size:.88rem; font-weight:700; }
+.name-entry input { width:100%; border:1px solid #e0d2e0; border-radius:9px; padding:10px 12px; background:white; color:var(--ink); }
+.text-enter { animation:fade-in .28s ease both; }
+
+/* Close the dialogue to enjoy the chosen background. Eevee becomes a floating, tappable companion. */
+.scene.dialogue-is-closed .dialogue-column { display:none!important; }
+.scene.dialogue-is-closed .story-screen { position:static; display:block; width:auto; animation:none!important; transform:none!important; }
+.scene.dialogue-is-closed .guide-area { position:fixed; z-index:30; right:clamp(14px,3vw,32px); bottom:clamp(14px,3vw,28px); min-height:0; width:auto; }
+.scene.dialogue-is-closed .eevee-toggle { width:clamp(70px,9vw,112px); height:clamp(70px,9vw,112px); padding:4px; border:3px solid rgba(255,255,255,.95); border-radius:18px; background:rgba(255,250,246,.92); box-shadow:0 6px 0 rgba(58,75,96,.18),0 12px 28px rgba(31,50,72,.22); animation:pop-in .3s ease both; }
+.scene.dialogue-is-closed .eevee-guide { width:100%; max-height:100%; filter:none; }
+.scene.dialogue-is-closed .guide-hint { display:none!important; }
+.scene.dialogue-is-closed .scene-friends { z-index:3; }
+.scene.dialogue-is-closed .footer-note { z-index:1; }
+
+@keyframes fade-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pop-in { from{opacity:0;transform:translateY(16px) scale(.94)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes friend-appear { from{opacity:0;transform:translateY(14px) scale(.9)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+@media(max-width:650px) {
+  .scene { padding:16px 14px 38px; background-position:center; }
+  .story-screen { grid-template-columns:1fr; gap:8px; max-width:460px; align-items:center; }
+  .guide-area { min-height:clamp(100px,20vh,175px); }
+  .eevee-guide { width:auto; max-width:160px; max-height:clamp(110px,20vh,170px); }
+  .dialogue-panel { padding:17px; }
+  .dialogue-panel { min-height:230px; padding:20px 32px 44px; text-align:center; }
+  .dialogue-panel::before { inset:0; background-size:100% 100%; }
+  .dialogue-panel.speaker--twilight::before { transform:scaleX(-1); }
+  .dialogue-close { top:18px; right:22px; }
+  .dialogue-text { min-height:0; margin:10px auto; }
+  .friend { max-height:13vh; }
+  .friend--cat { max-height:12vh; }
+  .friend--bunny { max-height:10vh; }
+  .dialogue-label { font-size:.55rem; }
+  .scene.dialogue-is-closed .guide-area { right:12px; bottom:14px; }
+  .scene.dialogue-is-closed .eevee-toggle { width:76px; height:76px; border-radius:19px; }
+  .scene.dialogue-is-closed .guide-hint { display:none; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+
+/* Animal companions: draggable sprites with their chosen names underneath. */
+.scene-friends { pointer-events:none; }
+.friend-card {
+  position:absolute; z-index:4; display:flex; flex-direction:column; align-items:center; gap:3px;
+  width:max-content; max-width:clamp(76px,14vw,170px); pointer-events:auto; cursor:grab;
+  touch-action:none; user-select:none; -webkit-user-select:none; animation:friend-appear .65s cubic-bezier(.2,.8,.2,1) both;
+}
+.friend-card.is-dragging { z-index:20; cursor:grabbing; animation:none; filter:drop-shadow(0 8px 8px #172d3c35); }
+.friend-card .friend { position:static; width:100%; height:auto; max-height:18vh; object-fit:contain; pointer-events:none; animation:none; }
+.friend-card--cat .friend { max-height:17vh; }
+.friend-card--bunny .friend { max-height:13vh; }
+.friend-name {
+  display:block; max-width:100%; padding:2px 8px; border:1px solid #ffffffa8; border-radius:999px;
+  background:#fffaf0d9; color:#43566a; font-size:clamp(.68rem,1.1vw,.86rem); font-weight:800;
+  line-height:1.3; text-align:center; overflow-wrap:anywhere; box-shadow:0 2px 5px #24384b20;
+}
+.friend-reaction {
+  position:absolute; left:50%; bottom:calc(100% + 9px); transform:translateX(-50%);
+  width:max-content; max-width:min(240px,70vw); padding:8px 11px; border:1px solid #ead8eb;
+  border-radius:13px; background:rgba(255,250,248,.97); color:#52627b; font-size:.85rem;
+  font-weight:800; text-align:center; box-shadow:0 4px 12px #26394b24; pointer-events:none;
+  animation:fade-in .18s ease both;
+}
+.friend-reaction::after {
+  content:""; position:absolute; left:calc(50% - 6px); bottom:-6px; width:10px; height:10px;
+  background:rgba(255,250,248,.97); border-right:1px solid #ead8eb; border-bottom:1px solid #ead8eb; transform:rotate(45deg);
+}
+@media(max-width:650px) {
+  .friend-card { max-width:clamp(65px,20vw,115px); gap:2px; }
+  .friend-card .friend { max-height:13vh; }
+  .friend-card--cat .friend { max-height:12vh; }
+  .friend-card--bunny .friend { max-height:10vh; }
+  .friend-name { padding:2px 6px; font-size:.68rem; }
+  .friend-reaction { font-size:.75rem; }
+}
+
+
+/* Transparent snack sprites and Twilight Sparkle appear after the snack conversation. */
+.scene-items {
+  position:absolute; z-index:6; inset:0; overflow:hidden; pointer-events:none;
+}
+.scene-object {
+  position:absolute; display:block; max-width:min(28vw,220px); pointer-events:auto;
+  cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none;
+  filter:drop-shadow(0 4px 4px #263c3b24);
+  animation:friend-appear .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.scene-object img { display:block; width:100%; height:auto; max-height:27vh; object-fit:contain; pointer-events:none; }
+.scene-object--twilight img { max-height:32vh; image-rendering:pixelated; }
+.scene-object--can img { max-height:31vh; }
+.scene-object.is-dragging { z-index:25; cursor:grabbing; animation:none; filter:drop-shadow(0 8px 9px #172d3c35); }
+.scene-object.is-selected { filter:drop-shadow(0 0 5px #fff3c8); }
+@media(max-width:650px) {
+  .scene-object { max-width:36vw; }
+  .scene-object img { max-height:19vh; }
+  .scene-object--twilight img { max-height:23vh; }
+  .scene-object--can img { max-height:23vh; }
+}
+
+
+/* Twilight's little reaction when clicked while the dialogue is tucked away. */
+.scene-item-reaction {
+  position:absolute; left:50%; bottom:calc(100% + 9px); transform:translateX(-50%);
+  width:max-content; max-width:min(270px,72vw); padding:8px 11px; border:1px solid #ead8eb;
+  border-radius:13px; background:rgba(255,250,248,.97); color:#52627b; font-size:.82rem;
+  font-weight:800; line-height:1.35; text-align:center; box-shadow:0 4px 12px #26394b24; pointer-events:none;
+  animation:fade-in .18s ease both;
+}
+.scene-item-reaction::after {
+  content:""; position:absolute; left:calc(50% - 6px); bottom:-6px; width:10px; height:10px;
+  background:rgba(255,250,248,.97); border-right:1px solid #ead8eb; border-bottom:1px solid #ead8eb; transform:rotate(45deg);
+}
+
+
+/* Evee's little random-summon mini game. */
+.play-game-button {
+  padding:10px 17px; border:1px solid #e4c7e2; border-radius:10px;
+  color:#875d91; background:linear-gradient(135deg,#fff8fc,#f3e6fa);
+  font-weight:800; box-shadow:0 4px 0 #d9c1df; cursor:pointer;
+  transition:transform .16s ease,filter .16s ease;
+}
+.play-game-button:hover { transform:translateY(-2px); filter:brightness(1.03); }
+.game-overlay {
+  position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:20px;
+  background:rgba(35,42,67,.58); backdrop-filter:blur(7px); animation:fade-in .2s ease both;
+}
+.game-overlay.is-hidden { display:none!important; }
+.game-card {
+  position:relative; width:min(100%,430px); padding:30px 25px 26px; border:1px solid #fff;
+  border-radius:25px; text-align:center; background:linear-gradient(145deg,rgba(255,252,251,.98),rgba(247,237,252,.98));
+  box-shadow:0 18px 55px rgba(28,31,60,.28);
+}
+.game-close {
+  position:absolute; top:11px; right:13px; width:32px; height:32px; border:0; border-radius:50%;
+  color:#897a9a; background:#eee6f5; font-size:1.35rem; cursor:pointer;
+}
+.game-eyebrow { margin:0 0 6px; color:#ad79a7; font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+.game-card h2 { margin:0 0 9px; color:#495674; font-size:clamp(1.35rem,4vw,1.75rem); }
+.game-card p { color:#65708a; line-height:1.5; }
+#gameIntro { margin:0 auto 18px; max-width:34ch; }
+.gamble-button {
+  min-width:180px; padding:14px 25px; border:1px solid #f8d6ff; border-radius:13px;
+  color:white; background:linear-gradient(135deg,#b17bd2,#817dc8); font-weight:900;
+  letter-spacing:.12em; box-shadow:0 5px 0 #7164a9,0 9px 18px #8473bd40; cursor:pointer;
+}
+.gamble-button:hover { transform:translateY(-2px); }
+.gamble-button:disabled { opacity:.7; cursor:default; transform:none; }
+.summon-preview { display:flex; flex-direction:column; align-items:center; gap:5px; margin:10px 0 18px; }
+.summon-preview img { width:auto; max-width:min(65%,220px); height:clamp(130px,30vh,230px); object-fit:contain; filter:drop-shadow(0 5px 10px #37405c25); }
+.summon-preview p { margin:0; font-weight:800; color:#8a6397; }
+.scene-object--summoned { z-index:7; max-width:min(25vw,240px); }
+.scene-object--speaking { z-index:12 !important; }
+.scene-object--summoned img { max-height:42vh; }
+@media(max-width:650px) {
+  .game-card { padding:28px 18px 23px; border-radius:21px; }
+  .play-game-button { padding:10px 13px; font-size:.9rem; }
+  .scene-object--summoned { max-width:31vw; }
+  .scene-object--summoned img { max-height:26vh; }
+}
+
+/* Beach-story character sprites, with transparent cutouts matching the other scene companions. */
+.story-character {
+  position:absolute; z-index:7; right:3%; bottom:7%; width:clamp(100px,14vw,175px); height:clamp(110px,16vw,205px);
+  display:flex; align-items:flex-end; justify-content:center; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none;
+  animation:pop-in .45s cubic-bezier(.2,.8,.2,1) both; pointer-events:auto; cursor:pointer;
+}
+.story-character:hover { transform:translateY(-3px); }
+.story-character.is-dragging { z-index:25 !important; cursor:grabbing; animation:none; transform:none; filter:drop-shadow(0 8px 8px #172d3c35); }
+.story-character:focus-visible { outline:3px solid #fff; outline-offset:3px; border-radius:14px; }
+.story-character-sprite { display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 0 #263c3b24); pointer-events:none; }
+.story-character--emoji-fallback { font-size:clamp(54px,8vw,96px); filter:drop-shadow(0 4px 0 #263c3b24); }
+.story-character--group { bottom:6%; width:clamp(88px,12vw,145px); height:clamp(96px,13vw,165px); }
+.beach-character-reaction {
+  position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); z-index:15;
+  width:max-content; max-width:min(230px,68vw); padding:8px 11px; border:2px solid #b98e72; border-radius:14px;
+  background:#fffdf7; color:#51392f; font-size:clamp(.72rem,1.4vw,.92rem); font-weight:800; line-height:1.3; text-align:center;
+  box-shadow:0 4px 10px #26394b26; pointer-events:none; animation:fade-in .18s ease both;
+}
+.beach-character-reaction::after { content:""; position:absolute; left:calc(50% - 6px); bottom:-7px; width:10px; height:10px; background:#fffdf7; border-right:2px solid #b98e72; border-bottom:2px solid #b98e72; transform:rotate(45deg); }
+.story-character--group .beach-character-reaction { bottom:calc(100% + 5px); }
+@media(max-width:650px) {
+  .story-character { right:2%; bottom:4%; width:92px; height:106px; }
+  .story-character--group { width:70px; height:80px; bottom:5%; }
+  .beach-character-reaction { max-width:min(180px,65vw); padding:7px 9px; }
+}
+
+
+/* Pikachu joins only for the concert sequence. */
+.concert-pikachu {
+  position:absolute; z-index:13; left:4%; bottom:6%; width:clamp(150px,23vw,290px);
+  max-height:46vh; display:flex; align-items:flex-end; justify-content:center; pointer-events:none;
+  animation:pop-in .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.concert-pikachu img {
+  display:block; width:100%; max-height:46vh; object-fit:contain;
+  filter:drop-shadow(0 5px 7px #263c3b2b);
+}
+.karaoke-overlay {
+  position:fixed; inset:0; z-index:80; display:grid; place-items:center; overflow:auto;
+  padding:18px; background:rgba(28,35,57,.72); backdrop-filter:blur(7px);
+}
+.karaoke-overlay.is-hidden { display:none!important; }
+.karaoke-card {
+  width:min(100%,560px); max-height:calc(100svh - 36px); overflow:auto;
+  padding:clamp(20px,4vw,32px); border:1px solid #fff; border-radius:24px;
+  background:linear-gradient(145deg,rgba(255,252,251,.99),rgba(244,238,255,.99));
+  box-shadow:0 18px 55px rgba(28,31,60,.3); text-align:center;
+}
+.karaoke-eyebrow {
+  margin:0 0 5px; color:#a678ad; font-size:.75rem; font-weight:900;
+  letter-spacing:.13em; text-transform:uppercase;
+}
+.karaoke-card h2 { margin:0 0 6px; color:#495674; font-size:clamp(1.35rem,4vw,1.8rem); }
+.karaoke-song-name { margin:0 0 14px; color:#7c6588; font-weight:800; }
+#karaokeAudio { display:block; width:100%; margin:0 auto 10px; }
+.karaoke-audio-note { margin:8px 0; color:#69758b; font-size:.83rem; line-height:1.45; }
+.karaoke-external-link { display:inline-block; margin:4px 0 15px; color:#8b63a0; font-weight:800; }
+.karaoke-lyrics-label { display:block; margin:0 0 7px; color:#52627b; font-weight:900; text-align:left; }
+.karaoke-lyrics {
+  display:block; width:100%; min-height:120px; resize:vertical; padding:12px;
+  border:1px solid #ded2e8; border-radius:12px; background:#fff; color:#435269;
+  font:inherit; line-height:1.45;
+}
+.karaoke-skip { margin-top:14px; }
+@media(max-width:650px) {
+  .concert-pikachu { left:1%; bottom:4%; width:clamp(112px,36vw,180px); max-height:28vh; }
+  .concert-pikachu img { max-height:28vh; }
+  .karaoke-card { border-radius:19px; padding:22px 17px; }
+}
+
+/* Pikachu is a proper draggable companion and stands beside the dialogue bubble. */
+.dialogue-panel.speaker--twilight::before { transform:scaleX(-1); }
+.concert-pikachu {
+  left:auto; right:3%; top:27%; bottom:auto; width:clamp(150px,20vw,260px); height:clamp(170px,26vw,300px);
+  max-height:none; display:flex; align-items:flex-end; justify-content:center; pointer-events:auto; touch-action:none;
+}
+.concert-pikachu img { width:100%; height:100%; max-height:none; object-fit:contain; }
+.concert-pikachu.is-dragging { z-index:25 !important; animation:none; transform:none; filter:drop-shadow(0 8px 8px #172d3c35); }
+.karaoke-card { width:min(100%,500px); padding:clamp(20px,4vw,30px); }
+.karaoke-card h2 { margin:0 0 16px; }
+.karaoke-song-name { margin:0 0 12px; font-size:.9rem; }
+.karaoke-audio-note:empty { display:none; }
+#karaokeAudio { height:0; width:0; margin:0; opacity:0; }
+.karaoke-lyrics { min-height:190px; resize:vertical; border:2px solid #e8d9f0; border-radius:17px; padding:17px; background:rgba(255,255,255,.94); box-shadow:inset 0 2px 5px #5b4a6810; font-size:1rem; }
+.karaoke-lyrics::placeholder { color:#a89ab2; }
+.karaoke-skip { margin-top:15px; }
+@media(max-width:650px) {
+  .concert-pikachu { right:1%; top:30%; left:auto; bottom:auto; width:clamp(100px,28vw,160px); height:clamp(125px,34vw,190px); }
+  .karaoke-card { border-radius:19px; padding:22px 17px; }
+  .karaoke-lyrics { min-height:170px; }
+}
+
+/* Haunted mansion chapter */
+.scene--mansion { background-image:url("assets/haunted-mansion.jpeg"); background-position:center; background-size:cover; }
+.mansion-character { z-index:9; }
+.story-character--futaba .story-character-sprite { object-fit:contain; }
+
+/* Current dialogue speaker: emphasize without replacing the draggable sprite. */
+.story-character--speaking { z-index:18 !important; filter:drop-shadow(0 0 9px rgba(255,245,205,.8)); }
+.story-character--speaking::after { content:""; position:absolute; inset:-5px; border:2px solid rgba(255,248,220,.78); border-radius:18px; pointer-events:none; }
+
+/* Mansion props introduced in the Halloween story */
+.mansion-reveal-item {
+  position: absolute;
+  z-index: 22;
+  left: 50%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  width: clamp(90px, 17vw, 190px);
+  height: clamp(110px, 23vw, 250px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
+  pointer-events: auto;
+  cursor: grab;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  animation: mansionItemReveal .35s ease-out both;
+}
+.mansion-reveal-item:active { cursor: grabbing; }
+.mansion-reveal-item .story-character-sprite { width: 100%; height: 100%; object-fit: contain; }
+.story-character--hu-tao { filter: drop-shadow(0 0 10px rgba(255,180,205,.6)); }
+.story-character--darthvader { filter: drop-shadow(0 0 10px rgba(255,40,40,.4)); }
+@keyframes mansionItemReveal { from { opacity: 0; transform: translate(-50%,-42%) scale(.7); } to { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+
+/* Mansion mini-games: tactile 3x3 hiding board and clickable box illustrations. */
+.choice-list.mansion-choice-grid { display:grid; gap:9px; margin:14px auto 5px; width:min(100%,360px); }
+.choice-list.mansion-hiding-grid { grid-template-columns:repeat(3,minmax(0,1fr)); aspect-ratio:1/1; }
+.mansion-grid-button { min-width:0; border:2px solid rgba(255,231,198,.8); border-radius:13px; color:#fff4df; background:linear-gradient(145deg,rgba(63,43,53,.96),rgba(29,25,38,.97)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 4px 0 rgba(19,13,22,.28); font-size:clamp(1.2rem,4vw,1.8rem); font-weight:800; cursor:pointer; transition:transform .15s,background .15s,border-color .15s; }
+.mansion-grid-button:hover,.mansion-box-button:hover { transform:translateY(-2px); }
+.mansion-grid-button[aria-pressed="true"] { color:#332333; background:#ffdba5; border-color:#fff1d4; box-shadow:0 0 0 3px rgba(255,210,142,.25); }
+.choice-list.mansion-box-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.mansion-box-button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-width:0; padding:8px 5px; border:2px solid rgba(255,231,198,.7); border-radius:13px; color:#fff4df; background:rgba(43,32,44,.94); cursor:pointer; font-weight:800; transition:transform .15s,border-color .15s,background .15s; }
+.mansion-box-button img { display:block; width:100%; max-width:90px; aspect-ratio:1/1; object-fit:contain; }
+.mansion-box-button[aria-pressed="true"] { border-color:#ffd38e; background:rgba(105,66,72,.98); box-shadow:0 0 0 3px rgba(255,210,142,.22); }
+@media(max-width:520px) { .choice-list.mansion-choice-grid { width:min(100%,290px); gap:7px; } .mansion-box-button { font-size:.8rem; } }
+
+/* Mansion mini-games: tactile 3x3 hiding board and clickable box illustrations. */
+.choice-list.mansion-choice-grid { display:grid; gap:9px; margin:14px auto 5px; width:min(100%,360px); }
+.choice-list.mansion-hiding-grid { grid-template-columns:repeat(3,minmax(0,1fr)); aspect-ratio:1/1; }
+.mansion-grid-button { min-width:0; border:2px solid rgba(255,231,198,.8); border-radius:13px; color:#fff4df; background:linear-gradient(145deg,rgba(63,43,53,.96),rgba(29,25,38,.97)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 4px 0 rgba(19,13,22,.28); font-size:clamp(1.2rem,4vw,1.8rem); font-weight:800; cursor:pointer; transition:transform .15s,background .15s,border-color .15s; }
+.mansion-grid-button:hover,.mansion-box-button:hover { transform:translateY(-2px); }
+.mansion-grid-button[aria-pressed="true"] { color:#332333; background:#ffdba5; border-color:#fff1d4; box-shadow:0 0 0 3px rgba(255,210,142,.25); }
+.choice-list.mansion-box-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.mansion-box-button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-width:0; padding:8px 5px; border:2px solid rgba(255,231,198,.7); border-radius:13px; color:#fff4df; background:rgba(43,32,44,.94); cursor:pointer; font-weight:800; transition:transform .15s,border-color .15s,background .15s; }
+.mansion-box-button img { display:block; width:100%; max-width:90px; aspect-ratio:1/1; object-fit:contain; }
+.mansion-box-button[aria-pressed="true"] { border-color:#ffd38e; background:rgba(105,66,72,.98); box-shadow:0 0 0 3px rgba(255,210,142,.22); }
+@media(max-width:520px) { .choice-list.mansion-choice-grid { width:min(100%,290px); gap:7px; } .mansion-box-button { font-size:.8rem; } }
+
+/* Characters remain interactive and draggable even when Eevee's dialogue is hidden. */
+.scene.dialogue-is-closed .scene-friends .story-character {
+  pointer-events: auto !important;
+  cursor: grab;
+  touch-action: none;
+}
+.scene.dialogue-is-closed .scene-friends .story-character.is-dragging {
+  z-index: 40 !important;
+  cursor: grabbing;
+}
+
+/* Final reunion controls and the little handwritten surprise. */
+.restart-story-button {
+  position:absolute; z-index:40; top:clamp(10px,2vw,22px); left:clamp(10px,2vw,22px);
+  padding:8px 12px; border:1px solid rgba(255,255,255,.8); border-radius:999px;
+  color:#58627b; background:rgba(255,250,248,.82); backdrop-filter:blur(5px);
+  box-shadow:0 3px 12px rgba(45,51,74,.12); font-size:clamp(.72rem,1.4vw,.88rem); font-weight:800;
+  cursor:pointer; transition:transform .15s ease, background .15s ease;
+}
+.restart-story-button:hover { transform:translateY(-1px); background:rgba(255,250,248,.98); }
+.final-gift {
+  position:absolute; z-index:15; display:block; padding:0; border:0; background:transparent;
+  cursor:pointer; touch-action:manipulation; animation:pop-in .45s ease both;
+}
+.final-gift img { display:block; width:100%; height:auto; max-height:29vh; object-fit:contain; filter:drop-shadow(0 5px 7px rgba(45,38,39,.16)); }
+.final-gift--final-envelope { z-index:17; }
+.final-gift--final-envelope:hover { transform:translateY(-4px) rotate(-2deg); }
+.final-gift:focus-visible { outline:3px solid #bd82b2; outline-offset:5px; border-radius:10px; }
+.letter-overlay {
+  position:absolute; z-index:80; inset:0; display:grid; place-items:center; overflow:auto;
+  padding:clamp(12px,3vw,32px); background:rgba(37,35,48,.56); backdrop-filter:blur(5px);
+}
+.letter-card {
+  position:relative; display:grid; grid-template-columns:minmax(120px,.75fr) minmax(260px,1.5fr); align-items:center;
+  gap:clamp(12px,2vw,24px); width:min(900px,100%); max-height:calc(100svh - 28px); overflow:auto;
+  padding:clamp(18px,3vw,34px); border:1px solid #eadcc9; border-radius:22px;
+  background:linear-gradient(135deg,#fffaf1,#f8eddd); box-shadow:0 20px 70px rgba(26,27,39,.3);
+  animation:pop-in .3s ease both;
+}
+.letter-close {
+  position:absolute; z-index:2; top:10px; right:12px; width:34px; height:34px; border:0; border-radius:50%;
+  color:#856f72; background:#f5dfdf; font-size:1.45rem; line-height:1; cursor:pointer;
+}
+.letter-flower-wrap { display:grid; place-items:center; min-width:0; }
+.letter-flower { display:block; width:100%; max-width:300px; max-height:48vh; object-fit:contain; }
+.letter-paper { padding:clamp(14px,2.5vw,28px); border:1px solid #e9d9c2; border-radius:12px; background:rgba(255,255,255,.62); box-shadow:inset 0 0 0 5px rgba(255,255,255,.28); }
+.letter-paper h2 { margin:0 0 14px; color:#9a7180; font-family:'Quicksand','Nunito',sans-serif; font-size:clamp(1.25rem,3vw,1.8rem); text-align:center; }
+.letter-paper p { color:#5d5360; font-size:clamp(.92rem,1.8vw,1.05rem); line-height:1.85; white-space:normal; }
+.letter-paper .letter-signature { margin-top:20px; text-align:right; font-family:'Quicksand','Nunito',sans-serif; font-weight:800; color:#9a7180; }
+@media(max-width:600px) {
+  .restart-story-button { top:8px; left:8px; padding:7px 10px; }
+  .final-gift img { max-height:20vh; }
+  .letter-card { grid-template-columns:1fr; gap:8px; width:min(460px,100%); padding:18px 14px; }
+  .letter-flower { max-height:20vh; max-width:190px; }
+  .letter-paper { padding:12px 14px; }
+  .letter-paper p { line-height:1.6; }
+}
+
+/* Final gift moment: remove Eevee's dialogue and make the envelope an unmistakable click target. */
+.scene.final-gifts-screen .dialogue-column,
+.scene.final-gifts-screen .guide-area { display:none !important; }
+.scene.final-gifts-screen .scene-items { z-index:60; overflow:visible; pointer-events:none; }
+.scene.final-gifts-screen .final-gift { z-index:61; pointer-events:auto !important; cursor:pointer; padding:10px; border-radius:18px; }
+.scene.final-gifts-screen .final-gift img { pointer-events:none; max-height:42vh; }
+.scene.final-gifts-screen .final-gift--final-envelope { z-index:63; }
+.scene.final-gifts-screen .final-gift--final-envelope::after { content:"Open your letter ♡"; display:block; margin-top:4px; color:#705a70; font-size:clamp(.75rem,1.5vw,.95rem); font-weight:800; text-align:center; text-shadow:0 1px 4px #fff; }
+.scene.final-gifts-screen .final-gift:hover { transform:translateY(-4px) scale(1.03); }
+@media(max-width:600px) {
+  .scene.final-gifts-screen .final-gift--final-bouquet { left:12% !important; top:32% !important; width:38vw !important; }
+  .scene.final-gifts-screen .final-gift--final-envelope { left:48% !important; top:39% !important; width:38vw !important; }
+  .scene.final-gifts-screen .final-gift img { max-height:30vh; }
+}
+
+/* Eevee joins the final gift scene at the top of the screen. */
+.story-character--eevee-heart { align-items:center; filter:drop-shadow(0 4px 10px rgba(55,48,40,.18)); }
+.scene.final-gifts-screen .scene-friends { z-index:62; pointer-events:none; }
+.scene.final-gifts-screen .scene-friends .story-character { pointer-events:auto; }
+.scene.final-gifts-screen .story-character--eevee-heart { z-index:70 !important; }
